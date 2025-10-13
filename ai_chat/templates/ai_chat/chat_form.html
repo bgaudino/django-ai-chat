@@ -1,0 +1,33 @@
+{% load static %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'ai_chat/css/chat.css' %}">
+  <div class="chat" id="chat">
+    <button class="chat__toggle" aria-expanded="false" aria-controls="chatWindow">💬</button>
+    <section class="chat__window" id="chatWindow" role="dialog" aria-label="Chat">
+      <header class="chat__header">
+        <h3 class="chat__title">Chat</h3>
+        <form method="post" action="{% url 'clear_chat' %}" id="clear-form">
+          {% csrf_token %}
+          <button class="chat__clear" type="submit">Clear</button>
+        </form>
+        <button class="chat__close" aria-label="Close">✕</button>
+      </header>
+      <div class="chat__messages">
+        {% for message in conversation %}
+          <div class="chat__msg chat__msg--{{ message.role }}">{{ message.content }}</div>
+        {% endfor %}
+      </div>
+      <form class="chat__inputbar"
+            method="post"
+            action="{% url 'chat' %}"
+            id="chat-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.message }}
+        {{ form.message.errors }}
+        <button class="chat__send" type="submit">Send</button>
+      </form>
+    </section>
+  </div>
+  <script src="{% static 'ai_chat/js/chat.js' %}"></script>
+{% endblock content %}

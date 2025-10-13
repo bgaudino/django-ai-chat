@@ -1,0 +1,133 @@
+.chat {
+  position: fixed;
+  z-index: 9999;
+  right: 16px;
+  bottom: 16px;
+}
+
+.chat__toggle {
+  appearance: none;
+  border: 0;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.chat__window {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 340px;
+  max-height: min(70vh, 640px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.chat--open .chat__window {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.chat__header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat__title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+
+.chat__close {
+  appearance: none;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.chat__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat__msg {
+  padding: 8px 10px;
+  line-height: 1.35;
+  font-size: 14px;
+  word-wrap: break-word;
+  border-radius: 10px;
+}
+
+.chat__msg--user {
+  margin-left: auto;
+  background: #f1f5ff;
+  max-width: 80%;
+}
+
+.chat__inputbar {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.chat__textarea {
+  resize: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.chat__send {
+  appearance: none;
+  border: 0;
+  padding: 0 14px;
+  border-radius: 10px;
+}
+
+.chat__clear {
+  appearance: none;
+  border: 0;
+  padding: 14px;
+  border-radius: 10px;
+}
+
+@media (max-width: 480px) {
+  .chat__window {
+    width: calc(100vw - 24px);
+    right: -4px;
+    bottom: 68px;
+    max-height: min(75vh, 70dvh);
+    border-radius: 12px;
+  }
+}
