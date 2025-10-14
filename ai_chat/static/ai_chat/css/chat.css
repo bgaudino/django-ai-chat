@@ -65,6 +65,7 @@
   font-size: 14px;
   word-wrap: break-word;
   border-radius: 10px;
+  color: var(--pico-mark-color);
 }
 
 .chat__msg--user {
