@@ -29,7 +29,7 @@ class ChatView(FormView):
             role=Role.USER,
             content=form.cleaned_data["message"],
         )
-        conversation.append(user_message.model_dump())
+        conversation.append(user_message)
         stream = self.chat(conversation)
         response = StreamingHttpResponse(
             self.stream_response(stream, conversation),
@@ -59,9 +59,9 @@ class ChatView(FormView):
         )
         for chunk in stream:
             yield chunk
-            assistant_message.content += chunk
+            assistant_message["content"] += chunk
 
-        conversation.append(assistant_message.model_dump())
+        conversation.append(assistant_message)
         self.save_conversation(conversation)
 
 

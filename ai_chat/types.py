@@ -1,6 +1,5 @@
 from enum import StrEnum
-
-from pydantic import BaseModel
+from typing import TypedDict
 
 
 class Role(StrEnum):
@@ -8,6 +7,7 @@ class Role(StrEnum):
     ASSISTANT = "assistant"
     SYSTEM = "system"
 
-class Message(BaseModel):
+
+class Message(TypedDict):
     role: Role
     content: str

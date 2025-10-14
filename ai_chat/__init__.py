@@ -11,7 +11,7 @@ def get_ai_chat_config():
         config["SYSTEM_PROMPT"] = Message(
             role=Role.SYSTEM,
             content=config["SYSTEM_PROMPT"],
-        ).model_dump()
+        )
     if "PROVIDER" not in config:
         raise ValueError("AI_PROVIDER must be set in AI_CHAT configuration.")
     if "MODEL" not in config:
