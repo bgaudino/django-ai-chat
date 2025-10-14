@@ -1,0 +1,10 @@
+[user]
+	name = bgaudino
+	email = bgaudino@gmail.com
+[core]
+	editor = vim
+	excludesFile = /Users/briangaudino/.gitignore
+	excludefile = /Users/briangaudino/.gitignore
+[init]
+  defaultBranch = main
+

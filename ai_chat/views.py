@@ -3,6 +3,7 @@ from django.views.generic import FormView, View
 
 from . import client, config
 from .forms import ChatForm
+from .templatetags.ai_chat_tags import safe_markdown
 from .types import Message, Role
 
 
@@ -57,14 +58,16 @@ class ChatView(FormView):
         self.request.session.save()
 
     def stream_response(self, stream, conversation):
+        content = ""
+        render_markdown = config["RENDER_MARKDOWN"]
+        for chunk in stream:
+            content += chunk
+            yield safe_markdown(content) if render_markdown else content
+
         assistant_message = Message(
             role=Role.ASSISTANT,
-            content="",
+            content=content,
         )
-        for chunk in stream:
-            yield chunk
-            assistant_message["content"] += chunk
-
         conversation.append(assistant_message)
         self.save_conversation(conversation)
 

@@ -1,6 +1,8 @@
+{% load static ai_chat_tags %}
+{{ config|json_script:"config" }}
+<link rel="stylesheet" href="{% static 'ai_chat/css/chat.css' %}">
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-{% load static %}
 <link rel="stylesheet" href="{% static 'ai_chat/css/chat.css' %}">
 <div class="pico chat" id="chat">
   <button class="chat__toggle" aria-expanded="false" aria-controls="chatWindow">💬</button>
@@ -11,7 +13,13 @@
     </header>
     <div class="chat__messages">
       {% for message in conversation %}
-        <div class="chat__msg chat__msg--{{ message.role }}">{{ message.content }}</div>
+        <div class="chat__msg chat__msg--{{ message.role }}">
+          {% if config.RENDER_MARKDOWN %}
+            {{ message.content|safe_markdown }}
+          {% else %}
+            {{ message.content }}
+          {% endif %}
+        </div>
       {% endfor %}
     </div>
     <form class="chat__inputbar"

@@ -19,6 +19,7 @@ def get_ai_chat_config():
     config.setdefault("CHAT_TITLE", "Chat")
     config.setdefault("PLACEHOLDER", "Type your message here...")
     config.setdefault("LOGIN_REQUIRED", False)
+    config.setdefault("RENDER_MARKDOWN", True)
     return config
 
 

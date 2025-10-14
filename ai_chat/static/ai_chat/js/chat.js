@@ -1,6 +1,8 @@
 const root = document.getElementById('chat-root');
 const shadow = root.attachShadow({mode: 'open'});
 
+let config = {};
+
 shadow.innerHTML = `
   <div class="chat" id="chat"></div>
 `;
@@ -20,6 +22,7 @@ async function loadChat() {
 const loaded = await loadChat();
 
 if (loaded) {
+  config = JSON.parse(shadow.getElementById('config').textContent);
   const form = shadow.getElementById('chat-form');
   form.addEventListener('submit', handleSumbit);
 
@@ -75,14 +78,16 @@ async function handleSumbit(event) {
   });
 
   if (response.ok) {
-    const chunks = [];
     const reader = response.body.getReader();
     while (true) {
       const {done, value} = await reader.read();
       if (done) break;
       const text = new TextDecoder().decode(value);
-      chunks.push(text);
-      assistantMessage.textContent = chunks.join('');
+      if (config.RENDER_MARKDOWN) {
+        assistantMessage.innerHTML = text;
+      } else {
+        assistantMessage.textContent = text;
+      }
       scrollToBottom();
     }
   } else if (response.status === 400) {

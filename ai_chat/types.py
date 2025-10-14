@@ -27,3 +27,4 @@ class Config(TypedDict):
     CHAT_TITLE: str | None
     PLACEHOLDER: str | None
     LOGIN_REQUIRED: bool
+    RENDER_MARKDOWN: bool

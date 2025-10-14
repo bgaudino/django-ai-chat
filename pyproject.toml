@@ -3,6 +3,8 @@ name = "django-ai-chat"
 version = "0.1.0"
 dependencies = [
     "django>=4.2",
+    "markdown>=3.9",
+    "nh3>=0.3.1",
 ]
 
 [project.optional-dependencies]
