@@ -105,7 +105,13 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
+]
+
+[package.optional-dependencies]
+ollama = [
     { name = "ollama" },
+]
+openai = [
     { name = "openai" },
 ]
 
@@ -117,8 +123,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = ">=4.2" },
-    { name = "ollama", specifier = ">=0.6" },
-    { name = "openai", specifier = ">=2.3.0" },
+    { name = "ollama", marker = "extra == 'ollama'", specifier = ">=0.6" },
+    { name = "openai", marker = "extra == 'openai'", specifier = ">=2.3.0" },
 ]
 
 [package.metadata.requires-dev]
