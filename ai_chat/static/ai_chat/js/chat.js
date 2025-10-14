@@ -1,8 +1,22 @@
+async function loadChat() {
+  const response = await fetch('/chat');
+  if (!response.ok) {
+    console.error('Failed to load chat:', response.statusText);
+    return;
+  }
+  const data = await response.text();
+  document.getElementById('chat').innerHTML = data;
+}
+await loadChat();
+
 const form = document.getElementById('chat-form');
-
 form.addEventListener('submit', handleSumbit);
-
 scrollToBottom();
+
+const clearForm = document.getElementById('clear-form');
+if (clearForm) {
+  clearForm.addEventListener('submit', handleClear);
+}
 
 async function handleSumbit(event) {
   event.preventDefault();
@@ -27,9 +41,6 @@ async function handleSumbit(event) {
   const response = await fetch(form.action, {
     method: 'POST',
     body: data,
-    headers: {
-      Accept: 'application/json',
-    },
     credentials: 'include',
   });
 
@@ -57,6 +68,25 @@ async function handleSumbit(event) {
     assistantMessage.textContent = 'Error: Unable to process your request';
   }
   submitButton.disabled = false;
+}
+
+async function handleClear(event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const data = new FormData(form);
+
+  const response = await fetch(form.action, {
+    method: 'POST',
+    body: data,
+    credentials: 'include',
+  });
+  if (response.ok) {
+    const messagesContainer = document.querySelector('.chat__messages');
+    messagesContainer.innerHTML = '';
+  } else {
+    console.error('Failed to clear chat:', response.statusText);
+  }
 }
 
 function scrollToBottom() {

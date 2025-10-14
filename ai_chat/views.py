@@ -1,5 +1,4 @@
-from django.http import StreamingHttpResponse
-from django.shortcuts import redirect
+from django.http import HttpResponse, StreamingHttpResponse
 from django.views.generic import FormView, View
 
 from . import client, config
@@ -12,7 +11,7 @@ SESSION_KEY = "django_ai_chat_conversation"
 
 class ChatView(FormView):
     form_class = ChatForm
-    template_name = "ai_chat/chat_form.html"
+    template_name = "ai_chat/_chat.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -37,10 +36,9 @@ class ChatView(FormView):
         )
         return response
 
-    def render_to_response(self, context, **response_kwargs):
-        form = context["form"]
-        status = 200 if form.is_valid() else 400
-        return super().render_to_response(context, status=status, **response_kwargs)
+    def form_invalid(self, form):
+        context = self.get_context_data(form=form)
+        return self.render_to_response(context, status=400)
 
     def chat(self, conversation):
         return client.chat([config["SYSTEM_PROMPT"]] + conversation)
@@ -68,4 +66,4 @@ class ChatView(FormView):
 class ClearChatView(View):
     def post(self, request):
         request.session[SESSION_KEY] = []
-        return redirect("chat")
+        return HttpResponse(status=204)
