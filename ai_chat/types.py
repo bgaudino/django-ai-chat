@@ -26,3 +26,4 @@ class Config(TypedDict):
     API_KEY: str | None
     CHAT_TITLE: str | None
     PLACEHOLDER: str | None
+    LOGIN_REQUIRED: bool

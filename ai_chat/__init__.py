@@ -18,6 +18,7 @@ def get_ai_chat_config():
         raise ValueError("AI_MODEL must be set in AI_CHAT configuration.")
     config.setdefault("CHAT_TITLE", "Chat")
     config.setdefault("PLACEHOLDER", "Type your message here...")
+    config.setdefault("LOGIN_REQUIRED", False)
     return config
 
 

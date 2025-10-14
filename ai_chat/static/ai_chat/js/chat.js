@@ -10,20 +10,44 @@ async function loadChat() {
   const response = await fetch(url);
   if (!response.ok) {
     console.error('Failed to load chat:', response.statusText);
-    return;
+    return false;
   }
   const data = await response.text();
   shadow.getElementById('chat').innerHTML = data;
+  return true;
 }
-await loadChat();
 
-const form = shadow.getElementById('chat-form');
-form.addEventListener('submit', handleSumbit);
-scrollToBottom();
+const loaded = await loadChat();
 
-const clearForm = shadow.getElementById('clear-form');
-if (clearForm) {
-  clearForm.addEventListener('submit', handleClear);
+if (loaded) {
+  const form = shadow.getElementById('chat-form');
+  form.addEventListener('submit', handleSumbit);
+
+  const clearForm = shadow.getElementById('clear-form');
+  if (clearForm) {
+    clearForm.addEventListener('submit', handleClear);
+  }
+
+  const toggleButton = shadow.querySelector('.chat__toggle');
+  toggleButton.addEventListener('click', () => {
+    const chat = shadow.getElementById('chat');
+    chat.classList.toggle('chat--open');
+  });
+
+  const closeButton = shadow.querySelector('.chat__close');
+  closeButton.addEventListener('click', () => {
+    const chat = shadow.getElementById('chat');
+    chat.classList.remove('chat--open');
+  });
+
+  shadow.addEventListener('keypress', function (e) {
+    if (e.target.id === 'id_message' && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      shadow.querySelector('.chat__send').click();
+    }
+  });
+
+  scrollToBottom();
 }
 
 async function handleSumbit(event) {
@@ -119,22 +143,3 @@ function makeMessageElement(message, type) {
   messageElement.textContent = message;
   return messageElement;
 }
-
-const toggleButton = shadow.querySelector('.chat__toggle');
-toggleButton.addEventListener('click', () => {
-  const chat = shadow.getElementById('chat');
-  chat.classList.toggle('chat--open');
-});
-
-const closeButton = shadow.querySelector('.chat__close');
-closeButton.addEventListener('click', () => {
-  const chat = shadow.getElementById('chat');
-  chat.classList.remove('chat--open');
-});
-
-shadow.addEventListener('keypress', function(e) {
-  if (e.target.id === 'id_message' && e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    shadow.querySelector('.chat__send').click();
-  }
-});

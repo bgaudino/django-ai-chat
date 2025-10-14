@@ -1,4 +1,4 @@
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse, HttpResponseForbidden
 from django.views.generic import FormView, View
 
 from . import client, config
@@ -12,6 +12,11 @@ SESSION_KEY = "django_ai_chat_conversation"
 class ChatView(FormView):
     form_class = ChatForm
     template_name = "ai_chat/_chat.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated and config["LOGIN_REQUIRED"]:
+            return HttpResponseForbidden()
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
