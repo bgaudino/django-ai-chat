@@ -11,3 +11,16 @@ class Role(StrEnum):
 class Message(TypedDict):
     role: Role
     content: str
+
+
+class Provider(StrEnum):
+    OLLAMA = "ollama"
+    OPENAI = "openai"
+    GOOGLE = "google"
+
+
+class Config(TypedDict):
+    SYSYETM_PROMPT: Message
+    PROVIDER: Provider
+    MODEL: str
+    API_KEY: str | None

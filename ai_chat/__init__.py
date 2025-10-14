@@ -1,10 +1,10 @@
 from django.conf import settings
 
-from .types import Message, Role
+from .types import Config, Message, Role
 
 
 def get_ai_chat_config():
-    config = getattr(settings, "AI_CHAT", {})
+    config = Config(**getattr(settings, "AI_CHAT", {}))
     if "SYSTEM_PROMPT" not in config:
         raise ValueError("AI_SYSTEM_PROMPT must be set in AI_CHAT configuration.")
     elif isinstance(config["SYSTEM_PROMPT"], str):
@@ -21,18 +21,27 @@ def get_ai_chat_config():
 
 config = get_ai_chat_config()
 
-provider = config.get("PROVIDER", "ollama")
-if provider == "ollama":
-    from .providers import OllamaProvider
+provider = config["PROVIDER"]
+match config["PROVIDER"]:
+    case "ollama":
+        from .providers import OllamaProvider
 
-    client = OllamaProvider(model=config["MODEL"])
-elif provider == "openai":
-    from .providers import OpenAIProvider
-    if "OPENAI_API_KEY" not in config:
-        raise ValueError("OPENAI_API_KEY must be set in AI_CHAT configuration.")
+        client = OllamaProvider(config)
+    case "openai":
+        from .providers import OpenAIProvider
 
-    client = OpenAIProvider(model=config["MODEL"], api_key=config["OPENAI_API_KEY"])
-else:
-    raise ValueError(
-        f"Unsupported AI provider: {provider}. Supported providers: 'ollama, openai'."
-    )
+        if "API_KEY" not in config:
+            raise ValueError("API_KEY must be set in AI_CHAT configuration.")
+
+        client = OpenAIProvider(config)
+    case "google":
+        from .providers import GoogleProvider
+
+        if "API_KEY" not in config:
+            raise ValueError("API_KEY must be set in AI_CHAT configuration.")
+
+        client = GoogleProvider(config)
+    case _:
+        raise ValueError(
+            f"Unsupported AI provider: {provider}. Supported providers: 'ollama, openai, google'."
+        )
