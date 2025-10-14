@@ -72,3 +72,15 @@ Set this to a string like `"You are a helpful assistant."`. This setting is **re
 
 Used for authentication with AI providers.
 Not needed for Ollama, which runs locally, otherwise it is required.
+
+---
+
+### `CHAT_TITLE`
+
+The text to display as a heading in the chat widget. Optional (default: "Chat")
+
+---
+
+### `PLACEHOLDER`
+
+The placeholder text for the message input. Optional (default: "Type your message here...")

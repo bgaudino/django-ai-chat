@@ -16,6 +16,8 @@ def get_ai_chat_config():
         raise ValueError("AI_PROVIDER must be set in AI_CHAT configuration.")
     if "MODEL" not in config:
         raise ValueError("AI_MODEL must be set in AI_CHAT configuration.")
+    config.setdefault("CHAT_TITLE", "Chat")
+    config.setdefault("PLACEHOLDER", "Type your message here...")
     return config
 
 
@@ -45,3 +47,9 @@ match config["PROVIDER"]:
         raise ValueError(
             f"Unsupported AI provider: {provider}. Supported providers: 'ollama, openai, google'."
         )
+
+
+__all__ = [
+    "config",
+    "client",
+]

@@ -20,6 +20,7 @@ class ChatView(FormView):
             conversation = []
             self.save_conversation(conversation)
         context["conversation"] = conversation
+        context["config"] = config
         return context
 
     def form_valid(self, form):

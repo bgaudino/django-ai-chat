@@ -24,3 +24,5 @@ class Config(TypedDict):
     PROVIDER: Provider
     MODEL: str
     API_KEY: str | None
+    CHAT_TITLE: str | None
+    PLACEHOLDER: str | None
