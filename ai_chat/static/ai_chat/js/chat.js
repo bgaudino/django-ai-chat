@@ -131,3 +131,10 @@ closeButton.addEventListener('click', () => {
   const chat = shadow.getElementById('chat');
   chat.classList.remove('chat--open');
 });
+
+shadow.addEventListener('keypress', function(e) {
+  if (e.target.id === 'id_message' && e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    shadow.querySelector('.chat__send').click();
+  }
+});
