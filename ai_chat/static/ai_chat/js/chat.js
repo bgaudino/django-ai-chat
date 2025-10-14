@@ -1,19 +1,27 @@
+const root = document.getElementById('chat-root');
+const shadow = root.attachShadow({mode: 'open'});
+
+shadow.innerHTML = `
+  <div class="chat" id="chat"></div>
+`;
+
 async function loadChat() {
-  const response = await fetch('/chat');
+  const url = root.dataset.url;
+  const response = await fetch(url);
   if (!response.ok) {
     console.error('Failed to load chat:', response.statusText);
     return;
   }
   const data = await response.text();
-  document.getElementById('chat').innerHTML = data;
+  shadow.getElementById('chat').innerHTML = data;
 }
 await loadChat();
 
-const form = document.getElementById('chat-form');
+const form = shadow.getElementById('chat-form');
 form.addEventListener('submit', handleSumbit);
 scrollToBottom();
 
-const clearForm = document.getElementById('clear-form');
+const clearForm = shadow.getElementById('clear-form');
 if (clearForm) {
   clearForm.addEventListener('submit', handleClear);
 }
@@ -25,15 +33,13 @@ async function handleSumbit(event) {
   const submitButton = form.querySelector('.chat__send');
   submitButton.disabled = true;
   const data = new FormData(form);
-  const messagesContainer = document.querySelector('.chat__messages');
+  const messagesContainer = shadow.querySelector('.chat__messages');
   const userMessage = makeMessageElement(data.get('message'), 'user');
   messagesContainer.appendChild(userMessage);
   scrollToBottom();
 
   form.reset();
-  form.querySelectorAll('.errorlist').forEach((element) => {
-    element.remove();
-  });
+  clearErrors(form);
 
   const assistantMessage = makeMessageElement('Thinking...', 'assistant');
   messagesContainer.appendChild(assistantMessage);
@@ -82,15 +88,27 @@ async function handleClear(event) {
     credentials: 'include',
   });
   if (response.ok) {
-    const messagesContainer = document.querySelector('.chat__messages');
+    const messagesContainer = shadow.querySelector('.chat__messages');
     messagesContainer.innerHTML = '';
   } else {
     console.error('Failed to clear chat:', response.statusText);
   }
 }
 
+function clearErrors(form) {
+  form.querySelectorAll('.errorlist').forEach((element) => {
+    element.remove();
+  });
+  form.querySelectorAll('.form-error').forEach((element) => {
+    element.remove();
+  });
+  form.querySelectorAll('[aria-invalid]').forEach((element) => {
+    element.removeAttribute('aria-invalid');
+  });
+}
+
 function scrollToBottom() {
-  const messagesContainer = document.querySelector('.chat__messages');
+  const messagesContainer = shadow.querySelector('.chat__messages');
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
@@ -101,14 +119,14 @@ function makeMessageElement(message, type) {
   return messageElement;
 }
 
-const toggleButton = document.querySelector('.chat__toggle');
+const toggleButton = shadow.querySelector('.chat__toggle');
 toggleButton.addEventListener('click', () => {
-  const chat = document.getElementById('chat');
+  const chat = shadow.getElementById('chat');
   chat.classList.toggle('chat--open');
 });
 
-const closeButton = document.querySelector('.chat__close');
+const closeButton = shadow.querySelector('.chat__close');
 closeButton.addEventListener('click', () => {
-  const chat = document.getElementById('chat');
+  const chat = shadow.getElementById('chat');
   chat.classList.remove('chat--open');
 });
