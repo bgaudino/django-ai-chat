@@ -90,6 +90,7 @@ async function handleClear(event) {
   if (response.ok) {
     const messagesContainer = shadow.querySelector('.chat__messages');
     messagesContainer.innerHTML = '';
+    clearErrors(shadow.getElementById('chat-form'));
   } else {
     console.error('Failed to clear chat:', response.statusText);
   }
