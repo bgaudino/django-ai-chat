@@ -84,3 +84,9 @@ The text to display as a heading in the chat widget. Optional (default: "Chat")
 ### `PLACEHOLDER`
 
 The placeholder text for the message input. Optional (default: "Type your message here...")
+
+---
+
+### `RENDER_MARKDOWN`
+
+Controls whether assistant messages should be rendered as Markdown or plain text. Optional (default: True)
