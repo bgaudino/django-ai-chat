@@ -154,7 +154,9 @@ function resize() {
   if (this.scrollHeight > 180) {
     this.style.height = '180px';
   } else {
-    this.style.height = this.scrollHeight + 'px';
+    // Prevent small resize on initial input
+    const offset = 2;
+    this.style.height = `${this.scrollHeight + offset}px`;
   }
   scrollToBottom();
 }
