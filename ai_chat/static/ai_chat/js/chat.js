@@ -35,6 +35,7 @@ if (loaded) {
   toggleButton.addEventListener('click', () => {
     const chat = shadow.getElementById('chat');
     chat.classList.toggle('chat--open');
+    scrollToBottom();
   });
 
   const closeButton = shadow.querySelector('.chat__close');
@@ -43,6 +44,7 @@ if (loaded) {
     chat.classList.remove('chat--open');
   });
 
+  shadow.getElementById('id_message').addEventListener('input', resize);
   shadow.addEventListener('keypress', function (e) {
     if (e.target.id === 'id_message' && e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -66,6 +68,7 @@ async function handleSumbit(event) {
   scrollToBottom();
 
   form.reset();
+  resize.call(shadow.getElementById('id_message'));
   clearErrors(form);
 
   const assistantMessage = makeMessageElement('Thinking...', 'assistant');
@@ -102,6 +105,7 @@ async function handleSumbit(event) {
     assistantMessage.remove();
     form.replaceWith(newForm);
     newForm.addEventListener('submit', handleSumbit);
+    newForm.querySelector('#id_message').addEventListener('input', resize);
   } else {
     assistantMessage.textContent = 'Error: Unable to process your request';
   }
@@ -143,6 +147,16 @@ function clearErrors(form) {
 function scrollToBottom() {
   const messagesContainer = shadow.querySelector('.chat__messages');
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function resize() {
+  this.style.height = 'auto';
+  if (this.scrollHeight > 180) {
+    this.style.height = '180px';
+  } else {
+    this.style.height = this.scrollHeight + 'px';
+  }
+  scrollToBottom();
 }
 
 function makeMessageElement(message, type) {

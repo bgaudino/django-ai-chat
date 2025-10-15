@@ -74,6 +74,10 @@
   background-color: var(--pico-text-selection-color);
 }
 
+.chat__textarea {
+  resize: none;
+}
+
 .chat__actions {
   display: flex;
   justify-content: flex-end;
