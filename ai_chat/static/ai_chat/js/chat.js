@@ -82,9 +82,9 @@ async function handleSumbit(event) {
     credentials: 'include',
   });
 
+  assistantMessage.removeAttribute('aria-busy');
   if (response.ok) {
     const reader = response.body.getReader();
-    assistantMessage.removeAttribute('aria-busy');
     while (true) {
       const {done, value} = await reader.read();
       if (done) break;
