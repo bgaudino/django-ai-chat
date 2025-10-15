@@ -50,7 +50,7 @@ You can configure Django AI Chat using the `AI_CHAT` dictionary in your Django s
 `PROVIDER`:
 
 Specifies which AI backend to use.
-Supported values are `"openai"`, `"google"`, and `"ollama"`.
+Supported values are `"openai"`, `"google"`, `"anthropic"`, and `"ollama"`.
 This setting is **required**.
 
 ---
@@ -72,6 +72,12 @@ Set this to a string like `"You are a helpful assistant."`. This setting is **re
 
 Used for authentication with AI providers.
 Not needed for Ollama, which runs locally, otherwise it is required.
+
+---
+
+`MAX_TOKENS`
+
+Defines the maximum number of tokens the model can generate in a single response. Optional (default: 4096)
 
 ---
 

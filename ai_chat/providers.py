@@ -40,6 +40,7 @@ class OpenAIProvider(BaseProvider):
         stream = self.client.chat.completions.create(
             model=self.config["MODEL"],
             messages=[self.config["SYSTEM_PROMPT"]] + messages,
+            max_tokens=self.config["MAX_TOKENS"],
             stream=True,
         )
         for chunk in stream:
@@ -78,6 +79,27 @@ class GoogleProvider(BaseProvider):
             contents=self._transform_messages(messages),
             config={
                 "system_instruction": self.config["SYSTEM_PROMPT"]["content"],
+                "max_output_tokens": self.config["MAX_TOKENS"],
             },
         ):
             yield chunk.text
+
+
+class AnthropicProvider(BaseProvider):
+    def __init__(self, config: Config):
+        super().__init__(config)
+        from anthropic import Anthropic
+
+        self.client = Anthropic(api_key=self.config["API_KEY"])
+
+    def chat(self, messages: list[Message]):
+        stream = self.client.messages.create(
+            max_tokens=self.config["MAX_TOKENS"],
+            system=self.config["SYSTEM_PROMPT"]["content"],
+            messages=messages,
+            model=self.config["MODEL"],
+            stream=True,
+        )
+        for event in stream:
+            if event.type == "content_block_delta":
+                yield event.delta.text
