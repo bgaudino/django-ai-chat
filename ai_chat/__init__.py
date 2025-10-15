@@ -58,6 +58,13 @@ match provider:
             raise ValueError("API_KEY must be set in AI_CHAT configuration.")
 
         client = AnthropicProvider(config)
+    case "mistral":
+        from .providers import MistralProvider
+
+        if "API_KEY" not in config:
+            raise ValueError("API_KEY must be set in AI_CHAT configuration.")
+
+        client = MistralProvider(config)
     case _:
         raise ValueError(
             f"Unsupported AI provider: {provider}. Supported providers: 'ollama, openai, google'."

@@ -114,3 +114,22 @@ class AnthropicProvider(BaseProvider):
         for event in stream:
             if event.type == "content_block_delta":
                 yield event.delta.text
+
+
+class MistralProvider(BaseProvider):
+    def __init__(self, config: Config):
+        super().__init__(config)
+        from mistralai import Mistral
+
+        self.client = Mistral(api_key=self.config["API_KEY"])
+
+    def chat(self, messages: list[Message]):
+        stream = self.client.chat.stream(
+            model = self.config["MODEL"],
+            messages=[self.config["SYSTEM_PROMPT"]] + messages,
+            max_tokens=self.config["MAX_TOKENS"],
+            stream=True,
+        )
+
+        for event in stream:
+            yield event.data.choices[0].delta.content or ""

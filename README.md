@@ -50,7 +50,7 @@ You can configure Django AI Chat using the `AI_CHAT` dictionary in your Django s
 `PROVIDER`:
 
 Specifies which AI backend to use.
-Supported values are `"openai"`, `"google"`, `"anthropic"`, and `"ollama"`.
+Supported values are `"openai"`, `"google"`, `"anthropic"`, `"mistral"`, and `"ollama"`.
 This setting is **required**.
 
 ---

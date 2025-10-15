@@ -17,6 +17,7 @@ class Provider(StrEnum):
     OLLAMA = "ollama"
     OPENAI = "openai"
     GOOGLE = "google"
+    MISTRAL = "mistral"
 
 
 class Config(TypedDict):
