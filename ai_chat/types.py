@@ -20,7 +20,7 @@ class Provider(StrEnum):
 
 
 class Config(TypedDict):
-    SYSYETM_PROMPT: Message
+    SYSTEM_PROMPT: Message
     PROVIDER: Provider
     MODEL: str
     API_KEY: str | None

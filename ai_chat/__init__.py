@@ -3,7 +3,7 @@ from django.conf import settings
 from .types import Config, Message, Role
 
 
-def get_ai_chat_config():
+def get_ai_chat_config() -> Config:
     config = Config(**getattr(settings, "AI_CHAT", {}))
     if "SYSTEM_PROMPT" not in config:
         raise ValueError("AI_SYSTEM_PROMPT must be set in AI_CHAT configuration.")
@@ -26,7 +26,7 @@ def get_ai_chat_config():
 config = get_ai_chat_config()
 
 provider = config["PROVIDER"]
-match config["PROVIDER"]:
+match provider:
     case "ollama":
         from .providers import OllamaProvider
 
@@ -49,9 +49,3 @@ match config["PROVIDER"]:
         raise ValueError(
             f"Unsupported AI provider: {provider}. Supported providers: 'ollama, openai, google'."
         )
-
-
-__all__ = [
-    "config",
-    "client",
-]

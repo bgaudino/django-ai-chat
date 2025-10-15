@@ -10,14 +10,16 @@ from .types import Message, Role
 SESSION_KEY = "django_ai_chat_conversation"
 
 
-class ChatView(FormView):
-    form_class = ChatForm
-    template_name = "ai_chat/_chat.html"
-
+class LoginRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated and config["LOGIN_REQUIRED"]:
+        if config["LOGIN_REQUIRED"] and not request.user.is_authenticated:
             return HttpResponseForbidden()
         return super().dispatch(request, *args, **kwargs)
+
+
+class ChatView(LoginRequiredMixin, FormView):
+    form_class = ChatForm
+    template_name = "ai_chat/_chat.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,7 +38,7 @@ class ChatView(FormView):
             content=form.cleaned_data["message"],
         )
         conversation.append(user_message)
-        stream = self.chat(conversation)
+        stream = client.chat(conversation)
         response = StreamingHttpResponse(
             self.stream_response(stream, conversation),
             content_type="text/event-stream",
@@ -46,9 +48,6 @@ class ChatView(FormView):
     def form_invalid(self, form):
         context = self.get_context_data(form=form)
         return self.render_to_response(context, status=400)
-
-    def chat(self, conversation):
-        return client.chat([config["SYSTEM_PROMPT"]] + conversation)
 
     def get_conversation(self):
         return self.request.session.get(SESSION_KEY, [])
@@ -72,7 +71,7 @@ class ChatView(FormView):
         self.save_conversation(conversation)
 
 
-class ClearChatView(View):
+class ClearChatView(LoginRequiredMixin, View):
     def post(self, request):
         request.session[SESSION_KEY] = []
         return HttpResponse(status=204)

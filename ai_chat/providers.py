@@ -1,19 +1,19 @@
 from abc import ABC, abstractmethod
 
-from .types import Message
+from .types import Config, Message
 
 
 class BaseProvider(ABC):
-    def __init__(self, config):
+    def __init__(self, config: Config):
         self.config = config
 
     @abstractmethod
-    def chat(self, messages):
+    def chat(self, messages: list[Message]):
         pass
 
 
 class OllamaProvider(BaseProvider):
-    def __init__(self, config):
+    def __init__(self, config: Config):
         super().__init__(config)
         from ollama import Client
 
@@ -22,7 +22,7 @@ class OllamaProvider(BaseProvider):
     def chat(self, messages: list[Message]):
         stream = self.client.chat(
             model=self.config["MODEL"],
-            messages=messages,
+            messages=[self.config["SYSTEM_PROMPT"]] + messages,
             stream=True,
         )
         for chunk in stream:
@@ -30,7 +30,7 @@ class OllamaProvider(BaseProvider):
 
 
 class OpenAIProvider(BaseProvider):
-    def __init__(self, config):
+    def __init__(self, config: Config):
         super().__init__(config)
         from openai import OpenAI
 
@@ -39,7 +39,7 @@ class OpenAIProvider(BaseProvider):
     def chat(self, messages: list[Message]):
         stream = self.client.chat.completions.create(
             model=self.config["MODEL"],
-            messages=messages,
+            messages=[self.config["SYSTEM_PROMPT"]] + messages,
             stream=True,
         )
         for chunk in stream:
@@ -47,18 +47,16 @@ class OpenAIProvider(BaseProvider):
 
 
 class GoogleProvider(BaseProvider):
-    def __init__(self, config):
+    def __init__(self, config: Config):
         super().__init__(config)
         from google import genai
-        from google.genai.types import Content
 
-        self.Content = Content
         self.client = genai.Client(api_key=self.config["API_KEY"])
 
     def _transform_messages(self, messages: list[Message]):
         from google.genai.types import Content
 
-        contents = []
+        contents: list[Content] = []
         for message in messages:
             if message["role"] == "system":
                 continue
