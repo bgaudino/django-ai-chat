@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="{% static 'ai_chat/css/chat.css' %}">
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.{% if config.PICO_COLOR %}{{ config.PICO_COLOR }}.{% endif %}min.css">
-<link rel="stylesheet" href="{% static 'ai_chat/css/chat.css' %}">
 <div class="pico chat" id="chat"{% if config.PICO_THEME %} data-theme={{ config.PICO_THEME }}{% endif %}>
   <button class="chat__toggle" aria-expanded="false" aria-controls="chatWindow">💬</button>
   <article class="chat__window" id="chatWindow" role="dialog" aria-label="Chat">
@@ -14,7 +13,7 @@
     <div class="chat__messages">
       {% for message in conversation %}
         <div class="chat__msg chat__msg--{{ message.role }}">
-          {% if config.RENDER_MARKDOWN %}
+          {% if message.role == "assistant" and config.RENDER_MARKDOWN %}
             {{ message.content|safe_markdown }}
           {% else %}
             {{ message.content }}

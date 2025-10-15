@@ -69,7 +69,9 @@ async function handleSumbit(event) {
   clearErrors(form);
 
   const assistantMessage = makeMessageElement('Thinking...', 'assistant');
+  assistantMessage.setAttribute('aria-busy', 'true');
   messagesContainer.appendChild(assistantMessage);
+  scrollToBottom();
 
   const response = await fetch(form.action, {
     method: 'POST',
@@ -79,6 +81,7 @@ async function handleSumbit(event) {
 
   if (response.ok) {
     const reader = response.body.getReader();
+    assistantMessage.removeAttribute('aria-busy');
     while (true) {
       const {done, value} = await reader.read();
       if (done) break;

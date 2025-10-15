@@ -65,12 +65,13 @@
   font-size: 14px;
   word-wrap: break-word;
   border-radius: 10px;
-  color: var(--pico-mark-color);
+  color: var(--pico-color);
 }
 
 .chat__msg--user {
   margin-left: auto;
   max-width: 80%;
+  background-color: var(--pico-text-selection-color);
 }
 
 .chat__actions {
