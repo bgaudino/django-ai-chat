@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 
 class Role(StrEnum):
@@ -28,3 +28,5 @@ class Config(TypedDict):
     PLACEHOLDER: str | None
     LOGIN_REQUIRED: bool
     RENDER_MARKDOWN: bool
+    PICO_THEME: Literal["light", "dark"] | None
+    PICO_COLOR: str | None
