@@ -47,6 +47,17 @@ class OpenAIProvider(BaseProvider):
             yield chunk.choices[0].delta.content or ""
 
 
+class GoogleOpenAICompatibleProvider(OpenAIProvider):
+    def __init__(self, config: Config):
+        super().__init__(config)
+        from openai import OpenAI
+
+        self.client = OpenAI(
+            api_key=self.config["API_KEY"],
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
+
+
 class GoogleProvider(BaseProvider):
     def __init__(self, config: Config):
         super().__init__(config)

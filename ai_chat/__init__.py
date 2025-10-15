@@ -45,7 +45,12 @@ match provider:
         if "API_KEY" not in config:
             raise ValueError("API_KEY must be set in AI_CHAT configuration.")
 
-        client = GoogleProvider(config)
+        try:
+            client = GoogleProvider(config)
+        except ImportError:
+            from .providers import GoogleOpenAICompatibleProvider
+
+            client = GoogleOpenAICompatibleProvider(config)
     case "anthropic":
         from .providers import AnthropicProvider
 
