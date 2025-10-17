@@ -81,6 +81,15 @@ Defines the maximum number of tokens the model can generate in a single response
 
 ---
 
+`MAX_CONVERSATION_LENGTH`
+
+Limits how many messages are stored in the session for each chat.
+If the conversation exceeds this length, the oldest messages are automatically discarded.
+Defaults to 50. If set to `None` all messages are stored.
+
+---
+
+
 `CHAT_TITLE`
 
 The text to display as a heading in the chat widget. Optional (default: "Chat")

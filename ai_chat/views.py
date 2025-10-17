@@ -57,6 +57,9 @@ class ChatView(LoginRequiredMixin, FormView):
         return self.request.session.get(SESSION_KEY, [])
 
     def save_conversation(self, conversation):
+        max_len = config.get("MAX_CONVERSATION_LENGTH")
+        if max_len and len(conversation) > max_len:
+            conversation = conversation[-max_len:]
         self.request.session[SESSION_KEY] = conversation
         self.request.session.save()
 

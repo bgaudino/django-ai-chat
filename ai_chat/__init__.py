@@ -12,6 +12,7 @@ def get_ai_chat_config() -> Config:
     config.setdefault("SYSTEM_PROMPT", None)
     config.setdefault("SYSTEM_PROMPT_CACHE_TIMEOUT", None)
     config.setdefault("MAX_TOKENS", 4096)
+    config.setdefault("MAX_CONVERSATION_LENGTH", 50)
     config.setdefault("CHAT_TITLE", "Chat")
     config.setdefault("PLACEHOLDER", "Type your message here...")
     config.setdefault("LOGIN_REQUIRED", False)
