@@ -1,0 +1,3 @@
+include README.md
+recursive-include ai_chat/templates *
+recursive-include ai_chat/static *
