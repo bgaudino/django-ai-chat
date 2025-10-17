@@ -1,3 +1,5 @@
+from django.apps import apps
+from django.core.cache import cache
 from django.http import HttpResponse, StreamingHttpResponse, HttpResponseForbidden
 from django.views.generic import FormView, View
 
@@ -8,6 +10,7 @@ from .types import Message, Role
 
 
 SESSION_KEY = "django_ai_chat_conversation"
+CACHE_KEY = "django_ai_chat_system_prompt"
 
 
 class LoginRequiredMixin:
@@ -38,7 +41,8 @@ class ChatView(LoginRequiredMixin, FormView):
             content=form.cleaned_data["message"],
         )
         conversation.append(user_message)
-        stream = client.chat(conversation)
+        system_prompt = self.get_system_prompt()
+        stream = client.chat(conversation, system_prompt)
         response = StreamingHttpResponse(
             self.stream_response(stream, conversation),
             content_type="text/event-stream",
@@ -55,6 +59,23 @@ class ChatView(LoginRequiredMixin, FormView):
     def save_conversation(self, conversation):
         self.request.session[SESSION_KEY] = conversation
         self.request.session.save()
+
+    def get_system_prompt(self):
+        cache_timeout = config.get("SYSTEM_PROMPT_CACHE_TIMEOUT")
+        if apps.is_installed("ai_chat.prompts"):
+            if cache_timeout:
+                cached_prompt = cache.get(CACHE_KEY)
+                if cached_prompt:
+                    return cached_prompt
+
+            from ai_chat.prompts.models import SystemPrompt
+
+            if system_prompt := SystemPrompt.objects.first():
+                if cache_timeout:
+                    cache.set(CACHE_KEY, system_prompt.content, timeout=cache_timeout)
+                return system_prompt.content
+
+        return config.get("SYSTEM_PROMPT")
 
     def stream_response(self, stream, conversation):
         content = ""

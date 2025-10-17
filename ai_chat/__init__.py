@@ -1,21 +1,16 @@
 from django.conf import settings
 
-from .types import Config, Message, Role
+from .types import Config
 
 
 def get_ai_chat_config() -> Config:
     config = Config(**getattr(settings, "AI_CHAT", {}))
-    if "SYSTEM_PROMPT" not in config:
-        raise ValueError("AI_SYSTEM_PROMPT must be set in AI_CHAT configuration.")
-    elif isinstance(config["SYSTEM_PROMPT"], str):
-        config["SYSTEM_PROMPT"] = Message(
-            role=Role.SYSTEM,
-            content=config["SYSTEM_PROMPT"],
-        )
     if "PROVIDER" not in config:
         raise ValueError("AI_PROVIDER must be set in AI_CHAT configuration.")
     if "MODEL" not in config:
         raise ValueError("AI_MODEL must be set in AI_CHAT configuration.")
+    config.setdefault("SYSTEM_PROMPT", None)
+    config.setdefault("SYSTEM_PROMPT_CACHE_TIMEOUT", None)
     config.setdefault("MAX_TOKENS", 4096)
     config.setdefault("CHAT_TITLE", "Chat")
     config.setdefault("PLACEHOLDER", "Type your message here...")

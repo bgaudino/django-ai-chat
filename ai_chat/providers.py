@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from .types import Config, Message
+from .types import Config, Message, Role
 
 
 class BaseProvider(ABC):
@@ -8,7 +8,7 @@ class BaseProvider(ABC):
         self.config = config
 
     @abstractmethod
-    def chat(self, messages: list[Message]):
+    def chat(self, messages: list[Message], system_prompt: Message | None = None):
         pass
 
 
@@ -19,10 +19,13 @@ class OllamaProvider(BaseProvider):
 
         self.client = Client()
 
-    def chat(self, messages: list[Message]):
+    def chat(self, messages: list[Message], system_prompt: str | None = None):
+        messages = [m for m in messages]
+        if system_prompt:
+            messages = [Message(content=system_prompt, role=Role.SYSTEM)] + messages
         stream = self.client.chat(
             model=self.config["MODEL"],
-            messages=[self.config["SYSTEM_PROMPT"]] + messages,
+            messages=messages,
             stream=True,
         )
         for chunk in stream:
@@ -36,10 +39,13 @@ class OpenAIProvider(BaseProvider):
 
         self.client = OpenAI(api_key=self.config["API_KEY"])
 
-    def chat(self, messages: list[Message]):
+    def chat(self, messages: list[Message], system_prompt: str | None = None):
+        messages = [m for m in messages]
+        if system_prompt:
+            messages = [Message(content=system_prompt, role=Role.SYSTEM)] + messages
         stream = self.client.chat.completions.create(
             model=self.config["MODEL"],
-            messages=[self.config["SYSTEM_PROMPT"]] + messages,
+            messages=messages,
             max_tokens=self.config["MAX_TOKENS"],
             stream=True,
         )
@@ -70,7 +76,7 @@ class GoogleProvider(BaseProvider):
 
         contents: list[Content] = []
         for message in messages:
-            if message["role"] == "system":
+            if message["role"] == Role.SYSTEM:
                 continue
             contents.append(
                 Content(
@@ -84,12 +90,12 @@ class GoogleProvider(BaseProvider):
             )
         return contents
 
-    def chat(self, messages: list[Message]):
+    def chat(self, messages: list[Message], system_prompt: str | None = None):
         for chunk in self.client.models.generate_content_stream(
             model=self.config["MODEL"],
             contents=self._transform_messages(messages),
             config={
-                "system_instruction": self.config["SYSTEM_PROMPT"]["content"],
+                "system_instruction": system_prompt if system_prompt else None,
                 "max_output_tokens": self.config["MAX_TOKENS"],
             },
         ):
@@ -103,14 +109,16 @@ class AnthropicProvider(BaseProvider):
 
         self.client = Anthropic(api_key=self.config["API_KEY"])
 
-    def chat(self, messages: list[Message]):
-        stream = self.client.messages.create(
-            max_tokens=self.config["MAX_TOKENS"],
-            system=self.config["SYSTEM_PROMPT"]["content"],
-            messages=messages,
-            model=self.config["MODEL"],
-            stream=True,
-        )
+    def chat(self, messages: list[Message], system_prompt: str | None = None):
+        kwargs = {
+            "model": self.config["MODEL"],
+            "max_tokens": self.config["MAX_TOKENS"],
+            "messages": messages,
+            "stream": True,
+        }
+        if system_prompt:
+            kwargs["system"] = system_prompt
+        stream = self.client.messages.create(**kwargs)
         for event in stream:
             if event.type == "content_block_delta":
                 yield event.delta.text
@@ -123,10 +131,13 @@ class MistralProvider(BaseProvider):
 
         self.client = Mistral(api_key=self.config["API_KEY"])
 
-    def chat(self, messages: list[Message]):
+    def chat(self, messages: list[Message], system_prompt: str | None = None):
+        messages = [m for m in messages]
+        if system_prompt:
+            messages = [Message(content=system_prompt, role=Role.SYSTEM)] + messages
         stream = self.client.chat.stream(
-            model = self.config["MODEL"],
-            messages=[self.config["SYSTEM_PROMPT"]] + messages,
+            model=self.config["MODEL"],
+            messages=messages,
             max_tokens=self.config["MAX_TOKENS"],
             stream=True,
         )

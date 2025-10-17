@@ -21,7 +21,8 @@ class Provider(StrEnum):
 
 
 class Config(TypedDict):
-    SYSTEM_PROMPT: Message
+    SYSTEM_PROMPT: str | None
+    SYSTEM_PROMPT_CACHE_TIMEOUT: int | None
     PROVIDER: Provider
     MODEL: str
     API_KEY: str | None

@@ -27,11 +27,11 @@ AI_CHAT = {
 In your `urls.py`:
 
 ```python
-from django.urls import include
+from django.urls import include, path
 
 urlpatterns = [
     # ...
-    path("chat/", include("aichat.urls"),
+    path("chat/", include("ai_chat.urls")),
 ]
 ```
 
@@ -64,7 +64,7 @@ Specifies the model to use for the selected provider. This setting is **required
 `SYSTEM_PROMPT`
 
 Defines the assistant’s behavior.
-Set this to a string like `"You are a helpful assistant."`. This setting is **required**.
+Set this to a string like `"You are a helpful assistant."`
 
 ---
 
@@ -95,7 +95,7 @@ The placeholder text for the message input. Optional (default: "Type your messag
 
 `RENDER_MARKDOWN`
 
-Controls whether assistant messages should be rendered as Markdown or plain text. Optional (default: True)
+---
 
 `PICO_THEME`
 
@@ -110,3 +110,32 @@ Specifies the [PicoCSS version](https://picocss.com/docs/version-picker) for the
 You can use any valid Pico color name (e.g. `"red"`, `"pink"`, `"fuchsia`).
 If set to `None`, the default Pico color ("azure") will be used.
 
+---
+
+## Optional: Database-Stored System Prompt
+
+Django AI Chat can optionally load the system prompt from the database if the `ai_chat.prompts` app is installed.
+
+Add it to your project if you’d like to edit the system prompt from the Django admin instead of hard-coding it in settings:
+
+```python
+INSTALLED_APPS = [
+    "ai_chat",
+    "ai_chat.prompts",
+]
+```
+
+Then run:
+
+```bash
+python manage.py migrate ai_chat.prompts
+```
+
+Once installed, the app provides a `SystemPrompt` model.
+By default, the most recent prompt is used.
+If you need to load prompts more dynamically you can subclass `ai_chat.views.ChatView` and override `get_system_prompt`.
+
+`SYSTEM_PROMPT_CACHE_TIMEOUT`
+
+If set, the system prompt (from the optional `ai_chat.prompts` app) will be cached for this many seconds.
+If not set or None, caching is disabled and the prompt is read directly from the database each time.
