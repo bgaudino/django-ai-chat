@@ -3,7 +3,7 @@ export async function initChat() {
   const shadow = root.attachShadow({mode: 'open'});
 
   shadow.innerHTML = `
-  <div class="chat" id="chat"></div>
+  <div class="chat" id="chat" hidden></div>
 `;
 
   const url = root.dataset.url;
@@ -159,6 +159,10 @@ export async function initChat() {
     messageElement.textContent = message;
     return messageElement;
   }
+  const picocss = shadow.getElementById('chat__picocss');
+  picocss.addEventListener('load', () => {
+    shadow.getElementById('chat').removeAttribute('hidden');
+  });
 }
 
 initChat();

@@ -6,14 +6,7 @@
 }
 
 .chat__toggle {
-  appearance: none;
-  border: 0;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
   border-radius: 50%;
-  cursor: pointer;
 }
 
 .chat__window {
@@ -42,13 +35,20 @@
 
 .chat__header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
   padding: 12px 14px;
+  background-color: var(--pico-primary-background);
 }
 
 .chat__title {
   flex: 1;
+  color: var(--pico-primary-inverse);
+  margin-bottom: 0;
+}
+
+.chat__close {
+  font-size: .875rem;
 }
 
 .chat__messages {
@@ -82,6 +82,10 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+}
+
+.chat__actions button {
+  margin-bottom: 0;
 }
 
 @media (max-width: 480px) {
