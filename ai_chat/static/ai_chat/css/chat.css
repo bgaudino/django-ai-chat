@@ -7,6 +7,7 @@
 
 .chat__toggle {
   border-radius: 50%;
+  aspect-ratio: 1 / 1;
 }
 
 .chat__window {
@@ -45,10 +46,6 @@
   flex: 1;
   color: var(--pico-primary-inverse);
   margin-bottom: 0;
-}
-
-.chat__close {
-  font-size: .875rem;
 }
 
 .chat__messages {
