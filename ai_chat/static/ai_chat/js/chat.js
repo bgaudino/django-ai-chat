@@ -1,6 +1,6 @@
 export async function initChat() {
   const root = document.getElementById('chat-root');
-  const shadow = root.attachShadow({mode: 'open'});
+  const shadow = root.shadowRoot || root.attachShadow({mode: 'open'});
 
   shadow.innerHTML = `
   <div class="chat" id="chat" hidden></div>
