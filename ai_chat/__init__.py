@@ -21,6 +21,16 @@ def get_ai_chat_config() -> Config:
 
 
 config = get_ai_chat_config()
+client_config_keys = (
+    "CHAT_TITLE",
+    "PLACEHOLDER",
+    "RENDER_MARKDOWN",
+    "PICO_THEME",
+    "PICO_COLOR",
+)
+client_config = {
+    config[key] for key in client_config_keys if key in config
+}
 
 provider = config["PROVIDER"]
 match provider:

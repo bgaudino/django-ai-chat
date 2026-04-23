@@ -3,7 +3,7 @@ from django.core.cache import cache
 from django.http import HttpResponse, StreamingHttpResponse, HttpResponseForbidden
 from django.views.generic import FormView, View
 
-from . import client, config
+from . import client, client_config, config
 from .forms import ChatForm
 from .templatetags.ai_chat_tags import safe_markdown
 from .types import Message, Role
@@ -31,7 +31,7 @@ class ChatView(LoginRequiredMixin, FormView):
             conversation = []
             self.save_conversation(conversation)
         context["conversation"] = conversation
-        context["config"] = config
+        context["config"] = client_config
         return context
 
     def form_valid(self, form):
