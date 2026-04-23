@@ -29,7 +29,7 @@ client_config_keys = (
     "PICO_COLOR",
 )
 client_config = {
-    config[key] for key in client_config_keys if key in config
+    key: config[key] for key in client_config_keys if key in config
 }
 
 provider = config["PROVIDER"]
